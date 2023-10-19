@@ -1,6 +1,7 @@
 package br.com.joelbrs.JFCatalog.services;
 
-import br.com.joelbrs.JFCatalog.dtos.ProductDTO;
+import br.com.joelbrs.JFCatalog.dtos.ProductDTOIn;
+import br.com.joelbrs.JFCatalog.dtos.ProductDTOOut;
 import br.com.joelbrs.JFCatalog.model.Product;
 import br.com.joelbrs.JFCatalog.repositories.ProductRepository;
 import br.com.joelbrs.JFCatalog.resources.GenericResource;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ProductService implements GenericResource<ProductDTO, ProductDTO> {
+public class ProductService implements GenericResource<ProductDTOOut, ProductDTOIn> {
 
     private final ProductRepository productRepository;
 
@@ -26,27 +27,27 @@ public class ProductService implements GenericResource<ProductDTO, ProductDTO> {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductDTO> findAllPaged(Pageable pageable) {
-        return productRepository.findAll(pageable).map(p -> new ProductDTO(p, p.getCategories()));
+    public Page<ProductDTOOut> findAllPaged(Pageable pageable) {
+        return productRepository.findAll(pageable).map(p -> new ProductDTOOut(p, p.getCategories()));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ProductDTO findById(Long id) {
+    public ProductDTOOut findById(Long id) {
         var product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product Not Found, ID: " + id));
 
-        return new ProductDTO(product, product.getCategories());
+        return new ProductDTOOut(product, product.getCategories());
     }
 
     @Override
     @Transactional
-    public ProductDTO insert(ProductDTO dto) {
-        return new ProductDTO(productRepository.save(new Product(null, dto.getName(), dto.getName(), dto.getPrice(),dto.getImgUrl(), dto.getDate())));
+    public ProductDTOOut insert(ProductDTOIn dto) {
+        return new ProductDTOOut(productRepository.save(new Product(null, dto.getName(), dto.getName(), dto.getPrice(),dto.getImgUrl(), dto.getDate())));
     }
 
     @Override
     @Transactional
-    public ProductDTO update(Long id, ProductDTO dto) {
+    public ProductDTOOut update(Long id, ProductDTOIn dto) {
         try {
             Product product = productRepository.getReferenceById(id);
 
@@ -55,7 +56,7 @@ public class ProductService implements GenericResource<ProductDTO, ProductDTO> {
             product.setPrice(dto.getPrice());
             product.setImgUrl(dto.getImgUrl());
             product.setDate(dto.getDate());
-            return new ProductDTO(productRepository.save(product));
+            return new ProductDTOOut(productRepository.save(product));
         }
         catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Id Not Found: " + id);

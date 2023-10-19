@@ -1,6 +1,7 @@
 package br.com.joelbrs.JFCatalog.controllers;
 
-import br.com.joelbrs.JFCatalog.dtos.CategoryDTO;
+import br.com.joelbrs.JFCatalog.dtos.CategoryDTOIn;
+import br.com.joelbrs.JFCatalog.dtos.CategoryDTOOut;
 import br.com.joelbrs.JFCatalog.services.CategoryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,22 +19,22 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<CategoryDTO>> findAllPaged(Pageable pageable) {
+    public ResponseEntity<Page<CategoryDTOOut>> findAllPaged(Pageable pageable) {
         return ResponseEntity.ok().body(categoryService.findAllPaged(pageable));
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<CategoryDTOOut> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(categoryService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> insert(@RequestBody CategoryDTO dto) {
+    public ResponseEntity<CategoryDTOOut> insert(@RequestBody CategoryDTOIn dto) {
         return ResponseEntity.ok().body(categoryService.insert(dto));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CategoryDTO> update(@PathVariable Long id, @RequestBody CategoryDTO dto) {
+    public ResponseEntity<CategoryDTOOut> update(@PathVariable Long id, @RequestBody CategoryDTOIn dto) {
         return ResponseEntity.ok().body(categoryService.update(id, dto));
     }
 

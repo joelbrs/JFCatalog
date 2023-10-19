@@ -1,44 +1,51 @@
-package br.com.joelbrs.JFCatalog.model;
+package br.com.joelbrs.JFCatalog.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import br.com.joelbrs.JFCatalog.model.Category;
+import br.com.joelbrs.JFCatalog.model.Product;
+import br.com.joelbrs.JFCatalog.utils.DateControl;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "tb_product")
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ProductDTOOut implements Serializable {
     private Long id;
     private String name;
-
-    @Column(columnDefinition = "TEXT")
     private String description;
     private BigDecimal price;
     private String imgUrl;
 
-    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateControl.PATTERN_DATE, locale = "pt-BR", timezone = "America/Fortaleza")
     private Instant date;
+    private Set<CategoryDTOOut> categories = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories = new HashSet<>();
+    public ProductDTOOut() {}
 
-    public Product() {}
-
-    public Product(Long id, String name, String description, BigDecimal price, String imgUrl, Instant date) {
+    public ProductDTOOut(Long id, String name, String description, BigDecimal price, String imgUrl, Instant date) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.imgUrl = imgUrl;
         this.date = date;
+    }
+
+    public ProductDTOOut(Product product) {
+        this.id = product.getId();
+        this.name = product.getName();
+        this.description = product.getDescription();
+        this.price = product.getPrice();
+        this.imgUrl = product.getImgUrl();
+        this.date = product.getDate();
+    }
+
+    public ProductDTOOut(Product product, Set<Category> categories) {
+        this(product);
+
+        categories.forEach(c -> this.categories.add(new CategoryDTOOut(c)));
     }
 
     public Long getId() {
@@ -89,20 +96,7 @@ public class Product {
         this.date = date;
     }
 
-    public Set<Category> getCategories() {
+    public Set<CategoryDTOOut> getCategories() {
         return categories;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Objects.equals(id, product.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

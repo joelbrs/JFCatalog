@@ -1,6 +1,7 @@
 package br.com.joelbrs.JFCatalog.services;
 
-import br.com.joelbrs.JFCatalog.dtos.CategoryDTO;
+import br.com.joelbrs.JFCatalog.dtos.CategoryDTOIn;
+import br.com.joelbrs.JFCatalog.dtos.CategoryDTOOut;
 
 import br.com.joelbrs.JFCatalog.model.Category;
 import br.com.joelbrs.JFCatalog.repositories.CategoryRepository;
@@ -15,8 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 @Service
-public class CategoryService implements GenericResource<CategoryDTO, CategoryDTO> {
+public class CategoryService implements GenericResource<CategoryDTOOut, CategoryDTOIn> {
 
     private final CategoryRepository categoryRepository;
 
@@ -26,30 +29,32 @@ public class CategoryService implements GenericResource<CategoryDTO, CategoryDTO
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CategoryDTO> findAllPaged(Pageable pageable) {
-        return categoryRepository.findAll(pageable).map(CategoryDTO::new);
+    public Page<CategoryDTOOut> findAllPaged(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(c -> new CategoryDTOOut(c, c.getProducts()));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryDTO findById(Long id) {
-        return new CategoryDTO(categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found, ID: " + id)));
+    public CategoryDTOOut findById(Long id) {
+        var category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found, ID: " + id));
+
+        return new CategoryDTOOut(category, category.getProducts());
     }
 
     @Override
     @Transactional
-    public CategoryDTO insert(CategoryDTO dto) {
-        return new CategoryDTO(categoryRepository.save(new Category(null, dto.getName(), dto.getCreatedAt(), dto.getUpdatedAt())));
+    public CategoryDTOOut insert(CategoryDTOIn dto) {
+        return new CategoryDTOOut(categoryRepository.save(new Category(null, dto.getName(), Instant.now(), null)));
     }
 
     @Override
     @Transactional
-    public CategoryDTO update(Long id, CategoryDTO dto) {
+    public CategoryDTOOut update(Long id, CategoryDTOIn dto) {
         try {
             Category category = categoryRepository.getReferenceById(id);
             category.setName(dto.getName());
-
-            return new CategoryDTO(categoryRepository.save(category));
+            category.setUpdatedAt(Instant.now());
+            return new CategoryDTOOut(categoryRepository.save(category));
         }
         catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Id Not Found: " + id);
