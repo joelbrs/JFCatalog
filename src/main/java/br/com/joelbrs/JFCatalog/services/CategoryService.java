@@ -3,7 +3,9 @@ package br.com.joelbrs.JFCatalog.services;
 import br.com.joelbrs.JFCatalog.dtos.CategoryDTOIn;
 import br.com.joelbrs.JFCatalog.dtos.CategoryDTOOut;
 
+import br.com.joelbrs.JFCatalog.dtos.ProductDTOOut;
 import br.com.joelbrs.JFCatalog.model.Category;
+import br.com.joelbrs.JFCatalog.model.Product;
 import br.com.joelbrs.JFCatalog.repositories.CategoryRepository;
 import br.com.joelbrs.JFCatalog.resources.GenericResource;
 import br.com.joelbrs.JFCatalog.services.exceptions.DatabaseException;
@@ -20,11 +22,12 @@ import java.time.Instant;
 
 @Service
 public class CategoryService implements GenericResource<CategoryDTOOut, CategoryDTOIn> {
-
     private final CategoryRepository categoryRepository;
+    private final ProductService productService;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, ProductService productService) {
         this.categoryRepository = categoryRepository;
+        this.productService = productService;
     }
 
     @Override
@@ -44,7 +47,11 @@ public class CategoryService implements GenericResource<CategoryDTOOut, Category
     @Override
     @Transactional
     public CategoryDTOOut insert(CategoryDTOIn dto) {
-        return new CategoryDTOOut(categoryRepository.save(new Category(null, dto.getName(), Instant.now(), null)));
+        Category category = new Category();
+
+        dtoToEntity(dto, category);
+        category.setCreatedAt(Instant.now());
+        return new CategoryDTOOut(categoryRepository.save(category));
     }
 
     @Override
@@ -53,7 +60,7 @@ public class CategoryService implements GenericResource<CategoryDTOOut, Category
         try {
             Category category = categoryRepository.getReferenceById(id);
 
-            category.setName(dto.getName());
+            dtoToEntity(dto, category);
             category.setUpdatedAt(Instant.now());
             return new CategoryDTOOut(categoryRepository.save(category));
         }
@@ -74,4 +81,22 @@ public class CategoryService implements GenericResource<CategoryDTOOut, Category
             throw new DatabaseException("Integrity Violation");
         }
     }
+
+    private void dtoToEntity(CategoryDTOIn dto, Category category) {
+        category.setName(dto.getName());
+
+        for (Long categoryDto : dto.getProducts()) {
+            ProductDTOOut product = productService.findById(categoryDto);
+
+            category.addProduct(new Product(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getImgUrl(), product.getDate()));
+        }
+    }
 }
+
+
+
+
+
+
+
+

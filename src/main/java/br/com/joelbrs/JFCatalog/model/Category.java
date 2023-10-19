@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -68,7 +69,15 @@ public class Category implements Serializable {
     }
 
     public Set<Product> getProducts() {
-        return products;
+        return Collections.unmodifiableSet(products);
+    }
+
+    public void addProduct(Product product) {
+        products.add(product);
+    }
+
+    public void clearProducts() {
+        products.clear();
     }
 
     @Override
