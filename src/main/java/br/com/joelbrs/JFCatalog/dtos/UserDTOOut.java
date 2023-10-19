@@ -22,12 +22,7 @@ public class UserDTOOut implements Serializable {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-    }
-
-    public UserDTOOut(User user, Set<Role> roles) {
-        this(user);
-
-        roles.forEach(r -> this.roles.add(new RoleDTO(r)));
+        user.getRoles().forEach(r -> roles.add(new RoleDTO(r)));
     }
 
     public Long getId() {

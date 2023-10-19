@@ -4,6 +4,7 @@ import br.com.joelbrs.JFCatalog.model.Role;
 import br.com.joelbrs.JFCatalog.model.User;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 public class UserDTOIn implements Serializable {
@@ -11,6 +12,7 @@ public class UserDTOIn implements Serializable {
     private String lastName;
     private String email;
     private String password;
+    private Set<Long> roles = new HashSet<>();
 
     public UserDTOIn() {}
 
@@ -57,5 +59,13 @@ public class UserDTOIn implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Long> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Long> roles) {
+        this.roles = roles;
     }
 }

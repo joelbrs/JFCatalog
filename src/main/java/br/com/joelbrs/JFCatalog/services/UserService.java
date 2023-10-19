@@ -1,7 +1,9 @@
 package br.com.joelbrs.JFCatalog.services;
 
+import br.com.joelbrs.JFCatalog.dtos.RoleDTO;
 import br.com.joelbrs.JFCatalog.dtos.UserDTOIn;
 import br.com.joelbrs.JFCatalog.dtos.UserDTOOut;
+import br.com.joelbrs.JFCatalog.model.Role;
 import br.com.joelbrs.JFCatalog.model.User;
 import br.com.joelbrs.JFCatalog.repositories.UserRepository;
 import br.com.joelbrs.JFCatalog.resources.GenericResource;
@@ -19,27 +21,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService implements GenericResource<UserDTOOut, UserDTOIn> {
 
     private final UserRepository userRepository;
+    private final RoleService roleService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RoleService roleService) {
         this.userRepository = userRepository;
+        this.roleService = roleService;
     }
 
     @Transactional(readOnly = true)
     public Page<UserDTOOut> findAllPaged(Pageable pageable) {
-        return userRepository.findAll(pageable).map(u -> new UserDTOOut(u, u.getRoles()));
+        return userRepository.findAll(pageable).map(UserDTOOut::new);
     }
 
     @Override
     public UserDTOOut findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Id Not Found: " + id));
-
-        return new UserDTOOut(user, user.getRoles());
+        return new UserDTOOut(userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Id Not Found: " + id)));
     }
 
     @Override
     public UserDTOOut insert(UserDTOIn dto) {
-        User user = new User(null, dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getPassword());
+        User user = new User();
 
+        dtoToEntity(dto, user);
+        user.setPassword(dto.getPassword());
         return new UserDTOOut(userRepository.save(user));
     }
 
@@ -48,9 +52,7 @@ public class UserService implements GenericResource<UserDTOOut, UserDTOIn> {
         try {
             User user = userRepository.getReferenceById(id);
 
-            user.setFirstName(dto.getFirstName());
-            user.setLastName(dto.getLastName());
-
+            dtoToEntity(dto, user);
             return new UserDTOOut(userRepository.save(user));
         }
         catch (EntityNotFoundException e) {
@@ -68,6 +70,19 @@ public class UserService implements GenericResource<UserDTOOut, UserDTOIn> {
         }
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrity Violation!");
+        }
+    }
+
+    private void dtoToEntity(UserDTOIn dto, User user) {
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+
+        user.clearRoles();
+        for (Long roleDTO : dto.getRoles()) {
+            RoleDTO role = roleService.findById(roleDTO);
+
+            user.addRole(new Role(role.getId(), role.getAuthority()));
         }
     }
 }
