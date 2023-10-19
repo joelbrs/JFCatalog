@@ -4,7 +4,6 @@ import br.com.joelbrs.JFCatalog.model.Role;
 import br.com.joelbrs.JFCatalog.model.User;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 public class UserDTOIn implements Serializable {

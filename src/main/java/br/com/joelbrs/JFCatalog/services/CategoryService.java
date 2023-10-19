@@ -36,7 +36,7 @@ public class CategoryService implements GenericResource<CategoryDTOOut, Category
     @Override
     @Transactional(readOnly = true)
     public CategoryDTOOut findById(Long id) {
-        var category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found, ID: " + id));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found, ID: " + id));
 
         return new CategoryDTOOut(category, category.getProducts());
     }

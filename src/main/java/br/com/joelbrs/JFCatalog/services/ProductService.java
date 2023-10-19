@@ -34,7 +34,7 @@ public class ProductService implements GenericResource<ProductDTOOut, ProductDTO
     @Override
     @Transactional(readOnly = true)
     public ProductDTOOut findById(Long id) {
-        var product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product Not Found, ID: " + id));
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product Not Found, ID: " + id));
 
         return new ProductDTOOut(product, product.getCategories());
     }
