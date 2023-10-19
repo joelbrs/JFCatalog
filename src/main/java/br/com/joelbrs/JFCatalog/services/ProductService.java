@@ -1,7 +1,9 @@
 package br.com.joelbrs.JFCatalog.services;
 
+import br.com.joelbrs.JFCatalog.dtos.CategoryDTOOut;
 import br.com.joelbrs.JFCatalog.dtos.ProductDTOIn;
 import br.com.joelbrs.JFCatalog.dtos.ProductDTOOut;
+import br.com.joelbrs.JFCatalog.model.Category;
 import br.com.joelbrs.JFCatalog.model.Product;
 import br.com.joelbrs.JFCatalog.repositories.ProductRepository;
 import br.com.joelbrs.JFCatalog.resources.GenericResource;
@@ -19,9 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService implements GenericResource<ProductDTOOut, ProductDTOIn> {
 
     private final ProductRepository productRepository;
+    private final CategoryService categoryService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, CategoryService categoryService) {
         this.productRepository = productRepository;
+        this.categoryService = categoryService;
     }
 
 
@@ -42,7 +46,10 @@ public class ProductService implements GenericResource<ProductDTOOut, ProductDTO
     @Override
     @Transactional
     public ProductDTOOut insert(ProductDTOIn dto) {
-        return new ProductDTOOut(productRepository.save(new Product(null, dto.getName(), dto.getName(), dto.getPrice(),dto.getImgUrl(), dto.getDate())));
+        Product product = new Product();
+
+        dtoToEntity(dto, product);
+        return new ProductDTOOut(productRepository.save(product));
     }
 
     @Override
@@ -51,11 +58,7 @@ public class ProductService implements GenericResource<ProductDTOOut, ProductDTO
         try {
             Product product = productRepository.getReferenceById(id);
 
-            product.setName(dto.getName());
-            product.setDescription(dto.getDescription());
-            product.setPrice(dto.getPrice());
-            product.setImgUrl(dto.getImgUrl());
-            product.setDate(dto.getDate());
+            dtoToEntity(dto, product);
             return new ProductDTOOut(productRepository.save(product));
         }
         catch (EntityNotFoundException e) {
@@ -73,6 +76,21 @@ public class ProductService implements GenericResource<ProductDTOOut, ProductDTO
         }
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrity Violation");
+        }
+    }
+
+    private void dtoToEntity(ProductDTOIn dto, Product product) {
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setImgUrl(dto.getImgUrl());
+        product.setDate(dto.getDate());
+
+        product.clearCategories();
+        for (Long categoryDto : dto.getCategories()) {
+            CategoryDTOOut category = categoryService.findById(categoryDto);
+
+            product.addCategory(new Category(category.getId(), category.getName(), category.getCreatedAt(), category.getUpdatedAt()));
         }
     }
 }

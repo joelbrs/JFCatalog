@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProductDTOIn implements Serializable {
     private String name;
@@ -15,6 +17,7 @@ public class ProductDTOIn implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateControl.PATTERN_DATE, locale = "pt-BR", timezone = "America/Fortaleza")
     private Instant date;
+    private Set<Long> categories = new HashSet<>();
 
     public ProductDTOIn() {}
 
@@ -64,5 +67,13 @@ public class ProductDTOIn implements Serializable {
 
     public void setDate(Instant date) {
         this.date = date;
+    }
+
+    public Set<Long> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Long> categories) {
+        this.categories = categories;
     }
 }

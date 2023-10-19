@@ -3,6 +3,7 @@ package br.com.joelbrs.JFCatalog.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -74,7 +75,7 @@ public class User implements Serializable {
     }
 
     public Set<Role> getRoles() {
-        return roles;
+        return Collections.unmodifiableSet(roles);
     }
 
     public void addRole(Role role) {

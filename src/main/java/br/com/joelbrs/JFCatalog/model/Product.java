@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -90,7 +91,15 @@ public class Product {
     }
 
     public Set<Category> getCategories() {
-        return categories;
+        return Collections.unmodifiableSet(categories);
+    }
+
+    public void addCategory(Category category) {
+        categories.add(category);
+    }
+
+    public void clearCategories() {
+        categories.clear();
     }
 
     @Override

@@ -52,6 +52,7 @@ public class CategoryService implements GenericResource<CategoryDTOOut, Category
     public CategoryDTOOut update(Long id, CategoryDTOIn dto) {
         try {
             Category category = categoryRepository.getReferenceById(id);
+
             category.setName(dto.getName());
             category.setUpdatedAt(Instant.now());
             return new CategoryDTOOut(categoryRepository.save(category));
