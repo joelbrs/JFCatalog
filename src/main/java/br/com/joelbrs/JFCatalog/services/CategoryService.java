@@ -47,4 +47,9 @@ public class CategoryService implements CategoryResource {
 
         return new CategoryDTO(categoryRepository.save(category));
     }
+
+    @Override
+    public void delete(Long id) {
+        categoryRepository.deleteById(id);
+    }
 }
