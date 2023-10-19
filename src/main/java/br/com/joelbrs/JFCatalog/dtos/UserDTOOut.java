@@ -12,7 +12,6 @@ public class UserDTOOut implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
 
     private final Set<RoleDTO> roles = new HashSet<>();
 
@@ -23,7 +22,6 @@ public class UserDTOOut implements Serializable {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-        this.password = user.getPassword();
     }
 
     public UserDTOOut(User user, Set<Role> roles) {
@@ -62,14 +60,6 @@ public class UserDTOOut implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Set<RoleDTO> getRoles() {
