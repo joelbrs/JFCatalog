@@ -7,6 +7,7 @@ import br.com.joelbrs.JFCatalog.resources.CategoryResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -18,8 +19,8 @@ public class CategoryService implements CategoryResource {
         this.categoryRepository = categoryRepository;
     }
 
-
     @Override
+    @Transactional(readOnly = true)
     public Page<CategoryDTO> findAllPaged(Pageable pageable) {
         return categoryRepository.findAll(pageable).map(CategoryDTO::new);
     }
