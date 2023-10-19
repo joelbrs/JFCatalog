@@ -7,6 +7,7 @@ import br.com.joelbrs.JFCatalog.dtos.ProductDTOOut;
 import br.com.joelbrs.JFCatalog.model.Category;
 import br.com.joelbrs.JFCatalog.model.Product;
 import br.com.joelbrs.JFCatalog.repositories.CategoryRepository;
+import br.com.joelbrs.JFCatalog.repositories.ProductRepository;
 import br.com.joelbrs.JFCatalog.resources.GenericResource;
 import br.com.joelbrs.JFCatalog.services.exceptions.DatabaseException;
 import br.com.joelbrs.JFCatalog.services.exceptions.ResourceNotFoundException;
@@ -23,11 +24,11 @@ import java.time.Instant;
 @Service
 public class CategoryService implements GenericResource<CategoryDTOOut, CategoryDTOIn> {
     private final CategoryRepository categoryRepository;
-    private final ProductService productService;
+    private final ProductRepository productRepository;
 
-    public CategoryService(CategoryRepository categoryRepository, ProductService productService) {
+    public CategoryService(CategoryRepository categoryRepository, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
-        this.productService = productService;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -86,9 +87,14 @@ public class CategoryService implements GenericResource<CategoryDTOOut, Category
         category.setName(dto.getName());
 
         for (Long categoryDto : dto.getProducts()) {
-            ProductDTOOut product = productService.findById(categoryDto);
+            try {
+                Product product = productRepository.getReferenceById(categoryDto);
 
-            category.addProduct(new Product(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getImgUrl(), product.getDate()));
+                category.addProduct(product);
+            }
+            catch (EntityNotFoundException e) {
+                throw new ResourceNotFoundException("Id Not Found: " + categoryDto);
+            }
         }
     }
 }

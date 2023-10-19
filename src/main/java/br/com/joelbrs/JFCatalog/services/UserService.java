@@ -14,16 +14,19 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService implements GenericResource<UserDTOOut, UserDTOIn> {
 
+    private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleService roleService;
 
-    public UserService(UserRepository userRepository, RoleService roleService) {
+    public UserService(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository, RoleService roleService) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleService = roleService;
     }
@@ -43,7 +46,7 @@ public class UserService implements GenericResource<UserDTOOut, UserDTOIn> {
         User user = new User();
 
         dtoToEntity(dto, user);
-        user.setPassword(dto.getPassword());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         return new UserDTOOut(userRepository.save(user));
     }
 
