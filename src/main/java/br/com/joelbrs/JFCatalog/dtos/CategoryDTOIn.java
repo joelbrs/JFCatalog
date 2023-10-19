@@ -3,22 +3,12 @@ package br.com.joelbrs.JFCatalog.dtos;
 import java.io.Serializable;
 
 public class CategoryDTOIn implements Serializable {
-    private Long id;
     private String name;
 
     public CategoryDTOIn() {}
 
-    public CategoryDTOIn(Long id, String name) {
-        this.id = id;
+    public CategoryDTOIn(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

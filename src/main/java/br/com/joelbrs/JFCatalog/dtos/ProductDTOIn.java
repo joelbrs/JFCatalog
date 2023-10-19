@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 public class ProductDTOIn implements Serializable {
-    private Long id;
     private String name;
     private String description;
     private BigDecimal price;
@@ -19,21 +18,12 @@ public class ProductDTOIn implements Serializable {
 
     public ProductDTOIn() {}
 
-    public ProductDTOIn(Long id, String name, String description, BigDecimal price, String imgUrl, Instant date) {
-        this.id = id;
+    public ProductDTOIn(String name, String description, BigDecimal price, String imgUrl, Instant date) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.imgUrl = imgUrl;
         this.date = date;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
