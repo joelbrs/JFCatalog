@@ -38,4 +38,13 @@ public class CategoryService implements CategoryResource {
     public CategoryDTO insert(CategoryDTO dto) {
         return new CategoryDTO(categoryRepository.save(new Category(null, dto.getName())));
     }
+
+    @Override
+    @Transactional
+    public CategoryDTO update(Long id, CategoryDTO dto) {
+        Category category = categoryRepository.getReferenceById(id);
+        category.setName(dto.getName());
+
+        return new CategoryDTO(categoryRepository.save(category));
+    }
 }
