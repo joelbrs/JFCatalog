@@ -5,7 +5,11 @@ import br.com.joelbrs.JFCatalog.dtos.ProductDTO;
 import br.com.joelbrs.JFCatalog.model.Product;
 import br.com.joelbrs.JFCatalog.repositories.ProductRepository;
 import br.com.joelbrs.JFCatalog.resources.ProductResources;
+import br.com.joelbrs.JFCatalog.services.exceptions.DatabaseException;
 import br.com.joelbrs.JFCatalog.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,7 +31,9 @@ public class ProductService implements ProductResources {
 
     @Override
     public ProductDTO findById(Long id) {
-        return new ProductDTO(productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product Not Found, ID: " + id)));
+        var product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product Not Found, ID: " + id));
+
+        return new ProductDTO(product, product.getCategories());
     }
 
     @Override
@@ -37,18 +43,31 @@ public class ProductService implements ProductResources {
 
     @Override
     public ProductDTO update(Long id, ProductDTO dto) {
-        Product product = productRepository.getReferenceById(id);
+        try {
+            Product product = productRepository.getReferenceById(id);
 
-        product.setName(dto.getName());
-        product.setDescription(dto.getDescription());
-        product.setPrice(dto.getPrice());
-        product.setImgUrl(dto.getImgUrl());
-        product.setDate(dto.getDate());
-        return new ProductDTO(productRepository.save(product));
+            product.setName(dto.getName());
+            product.setDescription(dto.getDescription());
+            product.setPrice(dto.getPrice());
+            product.setImgUrl(dto.getImgUrl());
+            product.setDate(dto.getDate());
+            return new ProductDTO(productRepository.save(product));
+        }
+        catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Id Not Found: " + id);
+        }
     }
 
     @Override
     public void delete(Long id) {
-        productRepository.deleteById(id);
+        try {
+            productRepository.deleteById(id);
+        }
+        catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException("Id Not Found: " + id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Integrity Violation");
+        }
     }
 }
