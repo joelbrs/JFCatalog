@@ -2,6 +2,7 @@ package br.com.joelbrs.JFCatalog.services;
 
 import br.com.joelbrs.JFCatalog.dtos.CategoryDTO;
 
+import br.com.joelbrs.JFCatalog.model.Category;
 import br.com.joelbrs.JFCatalog.repositories.CategoryRepository;
 import br.com.joelbrs.JFCatalog.resources.CategoryResource;
 import br.com.joelbrs.JFCatalog.services.exceptions.ResourceNotFoundException;
@@ -30,5 +31,11 @@ public class CategoryService implements CategoryResource {
     @Transactional(readOnly = true)
     public CategoryDTO findById(Long id) {
         return new CategoryDTO(categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found, ID: " + id)));
+    }
+
+    @Override
+    @Transactional
+    public CategoryDTO insert(CategoryDTO dto) {
+        return new CategoryDTO(categoryRepository.save(new Category(null, dto.getName())));
     }
 }
