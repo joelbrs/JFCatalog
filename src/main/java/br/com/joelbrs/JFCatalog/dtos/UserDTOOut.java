@@ -29,7 +29,7 @@ public class UserDTOOut implements Serializable {
     public UserDTOOut(User user, Set<Role> roles) {
         this(user);
 
-        roles.forEach(r -> new RoleDTO(r));
+        roles.forEach(r -> this.roles.add(new RoleDTO(r)));
     }
 
     public Long getId() {
