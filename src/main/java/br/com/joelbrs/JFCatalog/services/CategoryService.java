@@ -24,4 +24,10 @@ public class CategoryService implements CategoryResource {
     public Page<CategoryDTO> findAllPaged(Pageable pageable) {
         return categoryRepository.findAll(pageable).map(CategoryDTO::new);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CategoryDTO findById(Long id) {
+        return new CategoryDTO(categoryRepository.findById(id).get());
+    }
 }

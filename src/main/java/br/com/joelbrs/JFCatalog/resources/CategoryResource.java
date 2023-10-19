@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface CategoryResource {
     Page<CategoryDTO> findAllPaged(Pageable pageable);
+    CategoryDTO findById(Long id);
 }
