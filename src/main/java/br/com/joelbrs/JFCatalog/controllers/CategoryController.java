@@ -8,11 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/categories")
-public class CategoryController implements CategoryResource {
-
-    @GetMapping
-    @Override
-    public Category findAll() {
-        return null;
-    }
+public class CategoryController {
 }
