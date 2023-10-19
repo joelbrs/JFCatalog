@@ -4,6 +4,7 @@ import br.com.joelbrs.JFCatalog.dtos.CategoryDTO;
 
 import br.com.joelbrs.JFCatalog.repositories.CategoryRepository;
 import br.com.joelbrs.JFCatalog.resources.CategoryResource;
+import br.com.joelbrs.JFCatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,6 @@ public class CategoryService implements CategoryResource {
     @Override
     @Transactional(readOnly = true)
     public CategoryDTO findById(Long id) {
-        return new CategoryDTO(categoryRepository.findById(id).get());
+        return new CategoryDTO(categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found, ID: " + id)));
     }
 }
