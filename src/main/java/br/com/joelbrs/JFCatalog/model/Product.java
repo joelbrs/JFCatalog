@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_product")
@@ -16,11 +17,17 @@ public class Product {
     private Long id;
     private String name;
 
-    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String description;
     private BigDecimal price;
     private String imgUrl;
+
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant date;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories = new HashSet<>();
 
     public Product() {}
 
@@ -79,6 +86,10 @@ public class Product {
 
     public void setDate(Instant date) {
         this.date = date;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
     }
 
     @Override

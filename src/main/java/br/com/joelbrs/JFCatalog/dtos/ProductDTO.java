@@ -1,10 +1,15 @@
 package br.com.joelbrs.JFCatalog.dtos;
 
+import br.com.joelbrs.JFCatalog.model.Category;
 import br.com.joelbrs.JFCatalog.model.Product;
+import br.com.joelbrs.JFCatalog.utils.DateControl;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProductDTO implements Serializable {
     private Long id;
@@ -12,9 +17,21 @@ public class ProductDTO implements Serializable {
     private String description;
     private BigDecimal price;
     private String imgUrl;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateControl.PATTERN_DATE, locale = "pt-BR", timezone = "America/Fortaleza")
     private Instant date;
+    private Set<CategoryDTO> categories = new HashSet<>();
 
     public ProductDTO() {}
+
+    public ProductDTO(Long id, String name, String description, BigDecimal price, String imgUrl, Instant date) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.imgUrl = imgUrl;
+        this.date = date;
+    }
 
     public ProductDTO(Product product) {
         this.id = product.getId();
@@ -23,6 +40,12 @@ public class ProductDTO implements Serializable {
         this.price = product.getPrice();
         this.imgUrl = product.getImgUrl();
         this.date = product.getDate();
+    }
+
+    public ProductDTO(Product product, Set<Category> categories) {
+        this(product);
+
+        categories.forEach(c -> this.categories.add(new CategoryDTO(c)));
     }
 
     public Long getId() {
@@ -71,5 +94,9 @@ public class ProductDTO implements Serializable {
 
     public void setDate(Instant date) {
         this.date = date;
+    }
+
+    public Set<CategoryDTO> getCategories() {
+        return categories;
     }
 }

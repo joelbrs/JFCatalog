@@ -1,6 +1,5 @@
 package br.com.joelbrs.JFCatalog.controllers;
 
-import br.com.joelbrs.JFCatalog.dtos.CategoryDTO;
 import br.com.joelbrs.JFCatalog.dtos.ProductDTO;
 import br.com.joelbrs.JFCatalog.services.ProductService;
 import org.springframework.data.domain.Page;

@@ -4,7 +4,7 @@ import br.com.joelbrs.JFCatalog.dtos.CategoryDTO;
 
 import br.com.joelbrs.JFCatalog.model.Category;
 import br.com.joelbrs.JFCatalog.repositories.CategoryRepository;
-import br.com.joelbrs.JFCatalog.resources.CategoryResource;
+import br.com.joelbrs.JFCatalog.resources.GenericResource;
 import br.com.joelbrs.JFCatalog.services.exceptions.DatabaseException;
 import br.com.joelbrs.JFCatalog.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,9 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
-public class CategoryService implements CategoryResource {
+public class CategoryService implements GenericResource<CategoryDTO, CategoryDTO> {
 
     private final CategoryRepository categoryRepository;
 
