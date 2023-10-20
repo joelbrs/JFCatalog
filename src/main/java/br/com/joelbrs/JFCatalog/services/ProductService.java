@@ -49,7 +49,7 @@ public class ProductService implements GenericResource<ProductDTOOut, ProductDTO
         Product product = new Product();
 
         dtoToEntity(dto, product);
-        return new ProductDTOOut(productRepository.save(product));
+        return new ProductDTOOut(productRepository.save(product), product.getCategories());
     }
 
     @Override

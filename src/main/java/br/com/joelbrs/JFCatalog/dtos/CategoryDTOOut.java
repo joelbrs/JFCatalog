@@ -1,14 +1,12 @@
 package br.com.joelbrs.JFCatalog.dtos;
 
 import br.com.joelbrs.JFCatalog.model.Category;
-import br.com.joelbrs.JFCatalog.model.Product;
 import br.com.joelbrs.JFCatalog.utils.DateControl;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+
 
 public class CategoryDTOOut implements Serializable {
     private Long id;
@@ -20,8 +18,6 @@ public class CategoryDTOOut implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateControl.PATTER_HOUR_DATE, locale = "pt-BR", timezone = "America/Fortaleza")
     private Instant updatedAt;
 
-    private Set<ProductDTOOut> products = new HashSet<>();
-
     public CategoryDTOOut() {}
 
     public CategoryDTOOut(Category category) {
@@ -30,13 +26,6 @@ public class CategoryDTOOut implements Serializable {
         this.createdAt = category.getCreatedAt();
         this.updatedAt = category.getUpdatedAt();
     }
-
-    public CategoryDTOOut(Category category, Set<Product> products) {
-        this(category);
-
-        products.forEach(p -> this.products.add(new ProductDTOOut(p)));
-    }
-
     public Long getId() {
         return id;
     }
@@ -67,9 +56,5 @@ public class CategoryDTOOut implements Serializable {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public Set<ProductDTOOut> getProducts() {
-        return products;
     }
 }

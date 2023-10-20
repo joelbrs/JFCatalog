@@ -34,15 +34,13 @@ public class CategoryService implements GenericResource<CategoryDTOOut, Category
     @Override
     @Transactional(readOnly = true)
     public Page<CategoryDTOOut> findAllPaged(Pageable pageable) {
-        return categoryRepository.findAll(pageable).map(c -> new CategoryDTOOut(c, c.getProducts()));
+        return categoryRepository.findAll(pageable).map(CategoryDTOOut::new);
     }
 
     @Override
     @Transactional(readOnly = true)
     public CategoryDTOOut findById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found, ID: " + id));
-
-        return new CategoryDTOOut(category, category.getProducts());
+        return new CategoryDTOOut(categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found, ID: " + id)));
     }
 
     @Override
