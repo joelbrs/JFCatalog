@@ -5,10 +5,12 @@ import br.com.joelbrs.JFCatalog.dtos.UserDTOIn;
 import br.com.joelbrs.JFCatalog.dtos.UserDTOOut;
 import br.com.joelbrs.JFCatalog.model.Role;
 import br.com.joelbrs.JFCatalog.model.User;
+import br.com.joelbrs.JFCatalog.repositories.RoleRepository;
 import br.com.joelbrs.JFCatalog.repositories.UserRepository;
 import br.com.joelbrs.JFCatalog.resources.GenericResource;
 import br.com.joelbrs.JFCatalog.services.exceptions.DatabaseException;
 import br.com.joelbrs.JFCatalog.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -23,12 +25,12 @@ public class UserService implements GenericResource<UserDTOOut, UserDTOIn> {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final RoleService roleService;
+    private final RoleRepository roleRepository;
 
-    public UserService(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository, RoleService roleService) {
+    public UserService(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
-        this.roleService = roleService;
+        this.roleRepository = roleRepository;
     }
 
     @Transactional(readOnly = true)
@@ -37,11 +39,13 @@ public class UserService implements GenericResource<UserDTOOut, UserDTOIn> {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDTOOut findById(Long id) {
         return new UserDTOOut(userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Id Not Found: " + id)));
     }
 
     @Override
+    @Transactional
     public UserDTOOut insert(UserDTOIn dto) {
         User user = new User();
 
@@ -51,6 +55,7 @@ public class UserService implements GenericResource<UserDTOOut, UserDTOIn> {
     }
 
     @Override
+    @Transactional
     public UserDTOOut update(Long id, UserDTOIn dto) {
         try {
             User user = userRepository.getReferenceById(id);
@@ -83,9 +88,14 @@ public class UserService implements GenericResource<UserDTOOut, UserDTOIn> {
 
         user.clearRoles();
         for (Long roleDTO : dto.getRoles()) {
-            RoleDTO role = roleService.findById(roleDTO);
+            try {
+                Role role = roleRepository.getReferenceById(roleDTO);
 
-            user.addRole(new Role(role.getId(), role.getAuthority()));
+                user.addRole(role);
+            }
+            catch (EntityNotFoundException e) {
+                throw new ResourceNotFoundException("Role Not Found, ID: " + roleDTO);
+            }
         }
     }
 }
