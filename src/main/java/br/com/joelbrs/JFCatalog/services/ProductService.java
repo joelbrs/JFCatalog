@@ -5,6 +5,7 @@ import br.com.joelbrs.JFCatalog.dtos.ProductDTOIn;
 import br.com.joelbrs.JFCatalog.dtos.ProductDTOOut;
 import br.com.joelbrs.JFCatalog.model.Category;
 import br.com.joelbrs.JFCatalog.model.Product;
+import br.com.joelbrs.JFCatalog.repositories.CategoryRepository;
 import br.com.joelbrs.JFCatalog.repositories.ProductRepository;
 import br.com.joelbrs.JFCatalog.resources.GenericResource;
 import br.com.joelbrs.JFCatalog.services.exceptions.DatabaseException;
@@ -21,11 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService implements GenericResource<ProductDTOOut, ProductDTOIn> {
 
     private final ProductRepository productRepository;
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
-    public ProductService(ProductRepository productRepository, CategoryService categoryService) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
-        this.categoryService = categoryService;
+        this.categoryRepository = categoryRepository;
     }
 
 
@@ -88,9 +89,14 @@ public class ProductService implements GenericResource<ProductDTOOut, ProductDTO
 
         product.clearCategories();
         for (Long categoryDto : dto.getCategories()) {
-            CategoryDTOOut category = categoryService.findById(categoryDto);
+            try {
+                Category category = categoryRepository.getReferenceById(categoryDto);
 
-            product.addCategory(new Category(category.getId(), category.getName(), category.getCreatedAt(), category.getUpdatedAt()));
+                product.addCategory(category);
+            }
+            catch (EntityNotFoundException e) {
+                throw new ResourceNotFoundException("Category Not Found, ID: " + categoryDto);
+            }
         }
     }
 }

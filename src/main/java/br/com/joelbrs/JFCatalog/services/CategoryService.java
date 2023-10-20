@@ -91,7 +91,7 @@ public class CategoryService implements GenericResource<CategoryDTOOut, Category
                 category.addProduct(product);
             }
             catch (EntityNotFoundException e) {
-                throw new ResourceNotFoundException("Id Not Found: " + categoryDto);
+                throw new ResourceNotFoundException("Product Not Found, ID: " + categoryDto);
             }
         }
     }
