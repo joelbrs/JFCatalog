@@ -1,6 +1,5 @@
 package br.com.joelbrs.JFCatalog.model;
 
-import br.com.joelbrs.JFCatalog.enums.AuthorityEnum;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -13,13 +12,13 @@ public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long authority;
+    private String authority;
 
     public Role() {}
 
-    public Role(Long id, AuthorityEnum authority) {
+    public Role(Long id, String authority) {
         this.id = id;
-        setAuthority(authority);
+        this.authority = authority;
     }
 
     public Long getId() {
@@ -30,12 +29,12 @@ public class Role implements Serializable {
         this.id = id;
     }
 
-    public AuthorityEnum getAuthority() {
-        return AuthorityEnum.valueOf(authority);
+    public String getAuthority() {
+        return authority;
     }
 
-    public void setAuthority(AuthorityEnum authority) {
-        this.authority = authority.getCode();
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
 
     @Override
