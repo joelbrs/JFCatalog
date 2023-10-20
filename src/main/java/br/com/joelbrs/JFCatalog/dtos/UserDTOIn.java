@@ -15,7 +15,7 @@ public class UserDTOIn implements Serializable {
     private String firstName;
     private String lastName;
 
-    @Email
+    @Email(message = "Should Be a Valid Email")
     private String email;
     private String password;
     private Set<Long> roles = new HashSet<>();
