@@ -1,5 +1,6 @@
 package br.com.joelbrs.JFCatalog.model;
 
+import br.com.joelbrs.JFCatalog.enums.Authority;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -12,13 +13,13 @@ public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String authority;
+    private Long authority;
 
     public Role() {}
 
-    public Role(Long id, String authority) {
+    public Role(Long id, Authority authority) {
         this.id = id;
-        this.authority = authority;
+        setAuthority(authority);
     }
 
     public Long getId() {
@@ -29,12 +30,12 @@ public class Role implements Serializable {
         this.id = id;
     }
 
-    public String getAuthority() {
-        return authority;
+    public Authority getAuthority() {
+        return Authority.valueOf(authority);
     }
 
-    public void setAuthority(String authority) {
-        this.authority = authority;
+    public void setAuthority(Authority authority) {
+        this.authority = authority.getCode();
     }
 
     @Override

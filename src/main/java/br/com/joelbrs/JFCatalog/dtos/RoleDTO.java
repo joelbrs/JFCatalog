@@ -1,18 +1,19 @@
 package br.com.joelbrs.JFCatalog.dtos;
 
+import br.com.joelbrs.JFCatalog.enums.Authority;
 import br.com.joelbrs.JFCatalog.model.Role;
 
 import java.io.Serializable;
 
 public class RoleDTO implements Serializable {
     private Long id;
-    private String authority;
+    private Authority authority;
 
     public RoleDTO() {}
 
-    public RoleDTO(Long id, String authority) {
+    public RoleDTO(Long id, Long authority) {
         this.id = id;
-        this.authority = authority;
+        setAuthority(authority);
     }
 
     public RoleDTO(Role role) {
@@ -28,11 +29,11 @@ public class RoleDTO implements Serializable {
         this.id = id;
     }
 
-    public String getAuthority() {
+    public Authority getAuthority() {
         return authority;
     }
 
-    public void setAuthority(String authority) {
-        this.authority = authority;
+    public void setAuthority(Long authority) {
+        this.authority = Authority.valueOf(authority);
     }
 }
