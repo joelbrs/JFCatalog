@@ -70,11 +70,10 @@ public class CategoryService implements GenericResource<CategoryDTOOut, Category
 
     @Override
     public void delete(Long id) {
+        categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found!"));
+
         try {
             categoryRepository.deleteById(id);
-        }
-        catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotFoundException("Id Not Found: " + id);
         }
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrity Violation");

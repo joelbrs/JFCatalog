@@ -59,11 +59,10 @@ public class RoleService implements GenericResource<RoleDTO, RoleDTO> {
 
     @Override
     public void delete(Long id) {
+        roleRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Role Not Found!"));
+
         try {
             roleRepository.deleteById(id);
-        }
-        catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotFoundException("ID Not Found: " + id);
         }
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrity Violation");

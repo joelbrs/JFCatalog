@@ -69,11 +69,10 @@ public class ProductService implements GenericResource<ProductDTOOut, ProductDTO
 
     @Override
     public void delete(Long id) {
+        productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product Not Found!"));
+
         try {
             productRepository.deleteById(id);
-        }
-        catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotFoundException("Id Not Found: " + id);
         }
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrity Violation");

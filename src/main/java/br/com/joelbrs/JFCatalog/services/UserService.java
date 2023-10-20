@@ -1,6 +1,5 @@
 package br.com.joelbrs.JFCatalog.services;
 
-import br.com.joelbrs.JFCatalog.dtos.RoleDTO;
 import br.com.joelbrs.JFCatalog.dtos.UserDTOIn;
 import br.com.joelbrs.JFCatalog.dtos.UserDTOOut;
 import br.com.joelbrs.JFCatalog.model.Role;
@@ -10,7 +9,6 @@ import br.com.joelbrs.JFCatalog.repositories.UserRepository;
 import br.com.joelbrs.JFCatalog.resources.GenericResource;
 import br.com.joelbrs.JFCatalog.services.exceptions.DatabaseException;
 import br.com.joelbrs.JFCatalog.services.exceptions.ResourceNotFoundException;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -70,11 +68,10 @@ public class UserService implements GenericResource<UserDTOOut, UserDTOIn> {
 
     @Override
     public void delete(Long id) {
+        userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User Not Found!"));
+
         try {
             userRepository.deleteById(id);
-        }
-        catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotFoundException("Id Not Found: " + id);
         }
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrity Violation!");
