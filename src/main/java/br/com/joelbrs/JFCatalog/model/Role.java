@@ -1,6 +1,6 @@
 package br.com.joelbrs.JFCatalog.model;
 
-import br.com.joelbrs.JFCatalog.enums.Authority;
+import br.com.joelbrs.JFCatalog.enums.AuthorityEnum;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -17,7 +17,7 @@ public class Role implements Serializable {
 
     public Role() {}
 
-    public Role(Long id, Authority authority) {
+    public Role(Long id, AuthorityEnum authority) {
         this.id = id;
         setAuthority(authority);
     }
@@ -30,11 +30,11 @@ public class Role implements Serializable {
         this.id = id;
     }
 
-    public Authority getAuthority() {
-        return Authority.valueOf(authority);
+    public AuthorityEnum getAuthority() {
+        return AuthorityEnum.valueOf(authority);
     }
 
-    public void setAuthority(Authority authority) {
+    public void setAuthority(AuthorityEnum authority) {
         this.authority = authority.getCode();
     }
 
