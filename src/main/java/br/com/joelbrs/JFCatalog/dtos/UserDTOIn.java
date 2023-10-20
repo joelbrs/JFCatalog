@@ -2,14 +2,20 @@ package br.com.joelbrs.JFCatalog.dtos;
 
 import br.com.joelbrs.JFCatalog.model.Role;
 import br.com.joelbrs.JFCatalog.model.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 public class UserDTOIn implements Serializable {
+
+    @NotBlank(message = "Required Field")
     private String firstName;
     private String lastName;
+
+    @Email
     private String email;
     private String password;
     private Set<Long> roles = new HashSet<>();

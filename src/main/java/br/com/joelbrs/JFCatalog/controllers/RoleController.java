@@ -2,6 +2,7 @@ package br.com.joelbrs.JFCatalog.controllers;
 
 import br.com.joelbrs.JFCatalog.dtos.RoleDTO;
 import br.com.joelbrs.JFCatalog.services.RoleService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +29,12 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<RoleDTO> insert(@RequestBody RoleDTO dto) {
+    public ResponseEntity<RoleDTO> insert(@Valid @RequestBody RoleDTO dto) {
         return ResponseEntity.ok().body(roleService.insert(dto));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<RoleDTO> update(@PathVariable Long id, @RequestBody RoleDTO dto) {
+    public ResponseEntity<RoleDTO> update(@PathVariable Long id, @Valid @RequestBody RoleDTO dto) {
         return ResponseEntity.ok().body(roleService.update(id, dto));
     }
 

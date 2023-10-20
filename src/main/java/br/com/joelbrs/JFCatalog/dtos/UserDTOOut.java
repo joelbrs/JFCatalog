@@ -1,6 +1,5 @@
 package br.com.joelbrs.JFCatalog.dtos;
 
-import br.com.joelbrs.JFCatalog.model.Role;
 import br.com.joelbrs.JFCatalog.model.User;
 
 import java.io.Serializable;

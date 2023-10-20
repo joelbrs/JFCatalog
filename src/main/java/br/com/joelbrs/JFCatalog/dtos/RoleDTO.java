@@ -1,11 +1,14 @@
 package br.com.joelbrs.JFCatalog.dtos;
 
 import br.com.joelbrs.JFCatalog.model.Role;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 
 public class RoleDTO implements Serializable {
     private Long id;
+
+    @NotBlank(message = "Required Field")
     private String authority;
 
     public RoleDTO() {}

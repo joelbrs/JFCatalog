@@ -1,10 +1,14 @@
 package br.com.joelbrs.JFCatalog.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 public class CategoryDTOIn implements Serializable {
+
+    @NotBlank(message = "Required Field")
     private String name;
 
     private Set<Long> products = new HashSet<>();

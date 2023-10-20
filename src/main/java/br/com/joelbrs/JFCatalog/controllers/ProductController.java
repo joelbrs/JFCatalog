@@ -3,6 +3,7 @@ package br.com.joelbrs.JFCatalog.controllers;
 import br.com.joelbrs.JFCatalog.dtos.ProductDTOIn;
 import br.com.joelbrs.JFCatalog.dtos.ProductDTOOut;
 import br.com.joelbrs.JFCatalog.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +30,12 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTOOut> insert(@RequestBody ProductDTOIn dto) {
+    public ResponseEntity<ProductDTOOut> insert(@Valid @RequestBody ProductDTOIn dto) {
         return ResponseEntity.ok().body(productService.insert(dto));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ProductDTOOut> update(@PathVariable Long id, @RequestBody ProductDTOIn dto) {
+    public ResponseEntity<ProductDTOOut> update(@PathVariable Long id, @Valid @RequestBody ProductDTOIn dto) {
         return ResponseEntity.ok().body(productService.update(id, dto));
     }
 

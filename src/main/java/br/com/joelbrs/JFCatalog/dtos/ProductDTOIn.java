@@ -2,6 +2,10 @@ package br.com.joelbrs.JFCatalog.dtos;
 
 import br.com.joelbrs.JFCatalog.utils.DateControl;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -10,11 +14,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ProductDTOIn implements Serializable {
+
+    @NotBlank(message = "Required Field")
+    @Size(min = 5, max = 60, message = "Fields's length should be between 5 and 60 characters")
     private String name;
     private String description;
+
+    @Positive
+    @NotBlank(message = "Required Field")
     private BigDecimal price;
     private String imgUrl;
 
+    @PastOrPresent(message = "Field should not be in future")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateControl.PATTERN_DATE, locale = "pt-BR", timezone = "America/Fortaleza")
     private Instant date;
     private Set<Long> categories = new HashSet<>();

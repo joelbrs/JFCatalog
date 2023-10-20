@@ -3,6 +3,7 @@ package br.com.joelbrs.JFCatalog.controllers;
 import br.com.joelbrs.JFCatalog.dtos.UserDTOIn;
 import br.com.joelbrs.JFCatalog.dtos.UserDTOOut;
 import br.com.joelbrs.JFCatalog.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +30,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTOOut> insert(@RequestBody UserDTOIn dto) {
+    public ResponseEntity<UserDTOOut> insert(@Valid @RequestBody UserDTOIn dto) {
         return ResponseEntity.ok().body(userService.insert(dto));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTOOut> update(@PathVariable Long id, @RequestBody UserDTOIn dto) {
+    public ResponseEntity<UserDTOOut> update(@PathVariable Long id, @Valid @RequestBody UserDTOIn dto) {
         return ResponseEntity.ok().body(userService.update(id, dto));
     }
 

@@ -3,6 +3,7 @@ package br.com.joelbrs.JFCatalog.controllers;
 import br.com.joelbrs.JFCatalog.dtos.CategoryDTOIn;
 import br.com.joelbrs.JFCatalog.dtos.CategoryDTOOut;
 import br.com.joelbrs.JFCatalog.services.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +30,12 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTOOut> insert(@RequestBody CategoryDTOIn dto) {
+    public ResponseEntity<CategoryDTOOut> insert(@Valid @RequestBody CategoryDTOIn dto) {
         return ResponseEntity.ok().body(categoryService.insert(dto));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CategoryDTOOut> update(@PathVariable Long id, @RequestBody CategoryDTOIn dto) {
+    public ResponseEntity<CategoryDTOOut> update(@PathVariable Long id, @Valid @RequestBody CategoryDTOIn dto) {
         return ResponseEntity.ok().body(categoryService.update(id, dto));
     }
 
